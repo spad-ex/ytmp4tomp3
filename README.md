@@ -2,3 +2,4 @@
 * A simple tool to download youtube videos as music, (.mp3) file.
 * uses flask,yt-dlp.
 * lightweight & easy.
+* playlist download support.
