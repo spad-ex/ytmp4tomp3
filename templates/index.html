@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+  <head>
+    <title>YouTube to MP3</title>
+  </head>
+  <body>
+    <input type="text" id="url" placeholder="Enter YouTube URL" />
+    <button type="button" onclick="convert()">Convert</button>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <span id="spinner" style="display: none">⏳</span>
+    <p id="response"></p>
+
+    <script>
+      function convert() {
+        const urlInput = document.getElementById("url").value;
+        const responseEl = document.getElementById("response");
+        const spinner = document.getElementById("spinner");
+
+        responseEl.textContent = "Processing...";
+        spinner.style.display = "inline-block";
+
+        fetch("/convert", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url: urlInput }),
+        })
+          .then((res) => {
+            if (!res.ok) throw new Error("Download failed");
+            // Read filename from Content-Disposition header
+            const cd = res.headers.get("Content-Disposition") || "";
+            let filename = "audio.mp3";
+            const match = cd.match(
+              /filename\*?=(?:UTF-8'')?["']?([^;"']+)["']?/i,
+            );
+            if (match && match[1]) {
+              filename = decodeURIComponent(match[1]);
+            }
+            return res.blob().then((blob) => ({ blob, filename }));
+          })
+          .then(({ blob, filename }) => {
+            const downloadUrl = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = downloadUrl;
+            a.download = filename; // use server-provided filename
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(downloadUrl);
+            responseEl.textContent = "Download complete!";
+            spinner.style.display = "none";
+          })
+          .catch((err) => {
+            responseEl.textContent = "An error occurred: " + err.message;
+            spinner.style.display = "none";
+          });
+      }
+    </script>
+  </body>
+</html>

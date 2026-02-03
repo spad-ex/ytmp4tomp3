@@ -1,0 +1,47 @@
+body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.container {
+  text-align: center;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+input,
+button {
+  padding: 10px;
+  margin: 10px;
+  font-size: 16px;
+  border-radius: 18px;
+}
+
+button {
+  cursor: pointer;
+}
+
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top: 4px solid black; /* neutral, no color */
+  width: 20px;
+  height: 20px;
+  animation: spin 2s linear infinite;
+  display: none;
+  margin-left: 10px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
